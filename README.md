@@ -208,3 +208,17 @@ sudo systemctl reload nginx
 Created by [Your Name] — tested on Ubuntu EC2
 
 ---
+
+sudo ufw status
+
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw allow 8080
+sudo ufw allow 8081
+
+sudo ufw enable
+or
+
+sudo ufw disable
+---
