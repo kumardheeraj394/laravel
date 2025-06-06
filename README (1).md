@@ -1,0 +1,210 @@
+
+# WordPress + Laravel + MySQL on Nginx (Ubuntu EC2)
+
+This project sets up **WordPress**, **Laravel**, and **MySQL** on a **single Nginx server** hosted on an **Ubuntu EC2 instance**. Useful for running PHP-based CMS and applications side-by-side.
+
+---
+
+## 🚀 Technologies Used
+
+- Ubuntu 20.04 / 22.04 (EC2)
+- Nginx
+- PHP (FPM)
+- MySQL Server
+- WordPress
+- Laravel
+- Composer
+- Git
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Launch EC2
+
+- OS: Ubuntu 20.04 or 22.04
+- Open ports in Security Group: `22`, `80`, `443`
+
+SSH into the instance:
+
+```bash
+ssh -i your-key.pem ubuntu@your-ec2-ip
+```
+
+---
+
+### 2. Install Required Packages
+
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install nginx mysql-server php php-fpm php-mysql php-mbstring php-xml php-curl php-zip unzip git curl composer -y
+```
+
+---
+
+### 3. Setup MySQL
+
+```bash
+sudo mysql_secure_installation
+```
+
+Then login and create databases and users:
+
+```sql
+CREATE DATABASE wordpress_db;
+CREATE USER 'wp_user'@'localhost' IDENTIFIED BY 'StrongPassword1!';
+GRANT ALL PRIVILEGES ON wordpress_db.* TO 'wp_user'@'localhost';
+
+CREATE DATABASE laravel_db;
+CREATE USER 'laravel_user'@'localhost' IDENTIFIED BY 'StrongPassword2!';
+GRANT ALL PRIVILEGES ON laravel_db.* TO 'laravel_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+---
+
+### 4. Install WordPress
+
+```bash
+cd /var/www/
+curl -O https://wordpress.org/latest.tar.gz
+tar -xzvf latest.tar.gz
+mv wordpress wordpress-site
+cp wordpress-site/wp-config-sample.php wordpress-site/wp-config.php
+```
+
+Edit `wp-config.php`:
+
+```php
+define('DB_NAME', 'wordpress_db');
+define('DB_USER', 'wp_user');
+define('DB_PASSWORD', 'StrongPassword1!');
+define('DB_HOST', 'localhost');
+```
+
+Set permissions:
+
+```bash
+sudo chown -R www-data:www-data /var/www/wordpress-site
+sudo chmod -R 755 /var/www/wordpress-site
+```
+
+---
+
+### 5. Install Laravel
+
+```bash
+cd /var/www/
+git clone https://github.com/laravel/laravel.git laravel-app
+cd laravel-app
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit `.env` and set DB config:
+
+```env
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=StrongPassword2!
+```
+
+Permissions:
+
+```bash
+sudo chown -R www-data:www-data /var/www/laravel-app
+sudo chmod -R 755 /var/www/laravel-app/storage
+```
+
+---
+
+### 6. Configure Nginx
+
+Edit default config:
+
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
+
+Replace content:
+
+```nginx
+server {
+    listen 80;
+    server_name _;
+
+    root /var/www;
+    index index.php index.html index.htm;
+
+    location /wordpress {
+        alias /var/www/wordpress-site;
+        index index.php;
+        try_files $uri $uri/ /index.php?$args;
+
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php-fpm.sock;
+        }
+    }
+
+    location /laravel {
+        alias /var/www/laravel-app/public;
+        index index.php;
+        try_files $uri $uri/ /index.php?$query_string;
+
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php-fpm.sock;
+        }
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+```
+
+Restart Nginx:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+---
+
+## ✅ Access in Browser
+
+- Laravel: `http://your-ec2-ip/laravel`
+- WordPress: `http://your-ec2-ip/wordpress`
+
+---
+
+## 🔐 Optional
+
+- Use Certbot to enable SSL:
+  ```bash
+  sudo apt install certbot python3-certbot-nginx -y
+  sudo certbot --nginx
+  ```
+- Use UFW to firewall unused ports.
+
+---
+
+## 📂 Directory Structure
+
+```
+/var/www/
+├── laravel-app/        → Laravel project
+└── wordpress-site/     → WordPress site
+```
+
+---
+
+## 🧑‍💻 Author
+
+Created by [Your Name] — tested on Ubuntu EC2
+
+---
