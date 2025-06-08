@@ -125,7 +125,7 @@ Permissions:
 
 ```bash
 sudo chown -R www-data:www-data /var/www/laravel
-sudo chmod -R 755 /var/www/laravel-app/storage
+sudo chmod -R 755 /var/www/laravel/storage
 ```
 
 ---
