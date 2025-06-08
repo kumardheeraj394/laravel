@@ -104,16 +104,21 @@ cd /var/www/
 sudo git clone https://github.com/laravel/laravel.git laravel
 sudo cd laravel
 sudo composer install
-cp .env.example .env
-php artisan key:generate
+sudo chown -R www-data:www-data /var/www/laravel
+sudo cp .env.example .env
+sudo php artisan key:generate
 ```
+
+sudo touch /var/www/laravel/database/database.sqlite
 
 Edit `.env` and set DB config:
 
 ```env
-DB_DATABASE=laravel_db
-DB_USERNAME=laravel_user
-DB_PASSWORD=StrongPassword2!
+su vi .env
+DB_CONNECTION=sqlite
+DB_DATABASE=/var/www/laravel/database/database.sqlite
+#DB_USERNAME=laravel_user
+#DB_PASSWORD=StrongPassword2!
 ```
 
 Permissions:
