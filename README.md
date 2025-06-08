@@ -101,8 +101,8 @@ sudo chmod -R 755 /var/www/wordpress
 
 ```bash
 cd /var/www/
-sudo git clone https://github.com/laravel/laravel.git laravel-app
-sudo cd laravel-app
+sudo git clone https://github.com/laravel/laravel.git laravel
+sudo cd laravel
 sudo composer install
 cp .env.example .env
 php artisan key:generate
