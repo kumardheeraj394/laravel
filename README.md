@@ -74,8 +74,8 @@ EXIT;
 cd /var/www/
 sudo curl -O https://wordpress.org/latest.tar.gz
 sudo tar -xzvf latest.tar.gz
-cd wordpress
-cp wordpress/wp-config-sample.php wordpress/wp-config.php
+sudp cd wordpress
+sudo cp wp-config-sample.php wp-config.php
 ```
 
 Edit `wp-config.php`:
