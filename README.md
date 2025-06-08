@@ -91,8 +91,8 @@ define('DB_HOST', 'localhost');
 Set permissions:
 
 ```bash
-sudo chown -R www-data:www-data /var/www/wordpress-site
-sudo chmod -R 755 /var/www/wordpress-site
+sudo chown -R www-data:www-data /var/www/wordpress
+sudo chmod -R 755 /var/www/wordpress
 ```
 
 ---
@@ -102,7 +102,7 @@ sudo chmod -R 755 /var/www/wordpress-site
 ```bash
 cd /var/www/
 sudo git clone https://github.com/laravel/laravel.git laravel-app
-cd laravel-app
+sudo cd laravel-app
 sudo composer install
 cp .env.example .env
 php artisan key:generate
@@ -119,7 +119,7 @@ DB_PASSWORD=StrongPassword2!
 Permissions:
 
 ```bash
-sudo chown -R www-data:www-data /var/www/laravel-app
+sudo chown -R www-data:www-data /var/www/laravel
 sudo chmod -R 755 /var/www/laravel-app/storage
 ```
 
