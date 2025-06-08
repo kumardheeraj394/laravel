@@ -81,6 +81,7 @@ sudo cp wp-config-sample.php wp-config.php
 Edit `wp-config.php`:
 
 ```php
+sudo vi /var/www/wordpress/wp-config.php
 define('DB_NAME', 'wordpress_db');
 define('DB_USER', 'wp_user');
 define('DB_PASSWORD', 'StrongPassword1!');
