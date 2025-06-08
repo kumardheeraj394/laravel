@@ -48,6 +48,10 @@ sudo apt install nginx mysql-server php php-fpm php-mysql php-mbstring php-xml p
 sudo mysql_secure_installation
 ```
 
+```bash
+sudo mysql -u root -p
+```
+
 Then login and create databases and users:
 
 ```sql
@@ -68,9 +72,9 @@ EXIT;
 
 ```bash
 cd /var/www/
-curl -O https://wordpress.org/latest.tar.gz
-tar -xzvf latest.tar.gz
-mv wordpress wordpress-site
+sudo curl -O https://wordpress.org/latest.tar.gz
+sudo tar -xzvf latest.tar.gz
+sudo mv wordpress wordpress-site
 cp wordpress-site/wp-config-sample.php wordpress-site/wp-config.php
 ```
 
@@ -96,9 +100,9 @@ sudo chmod -R 755 /var/www/wordpress-site
 
 ```bash
 cd /var/www/
-git clone https://github.com/laravel/laravel.git laravel-app
+sudo git clone https://github.com/laravel/laravel.git laravel-app
 cd laravel-app
-composer install
+sudo composer install
 cp .env.example .env
 php artisan key:generate
 ```
@@ -125,7 +129,7 @@ sudo chmod -R 755 /var/www/laravel-app/storage
 Edit default config:
 
 ```bash
-sudo nano /etc/nginx/sites-available/default
+sudo vi /etc/nginx/sites-available/default
 ```
 
 Replace content:
