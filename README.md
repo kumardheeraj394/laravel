@@ -71,7 +71,7 @@ EXIT;
 ### 4. Install WordPress
 
 ```bash
-cd /var/www/
+cd /var/www/html/
 sudo curl -O https://wordpress.org/latest.tar.gz
 sudo tar -xzvf latest.tar.gz
 sudp cd wordpress
@@ -81,7 +81,7 @@ sudo cp wp-config-sample.php wp-config.php
 Edit `wp-config.php`:
 
 ```php
-sudo vi /var/www/wordpress/wp-config.php
+sudo vi /var/www/html/wordpress/wp-config.php
 define('DB_NAME', 'wordpress_db');
 define('DB_USER', 'wp_user');
 define('DB_PASSWORD', 'StrongPassword1!');
@@ -91,7 +91,7 @@ define('DB_HOST', 'localhost');
 Set permissions:
 
 ```bash
-sudo chown -R www-data:www-data /var/www/wordpress
+sudo chown -R www-data:www-data /var/www/html/wordpress
 sudo chmod -R 755 /var/www/wordpress
 ```
 
@@ -100,32 +100,35 @@ sudo chmod -R 755 /var/www/wordpress
 ### 5. Install Laravel
 
 ```bash
-cd /var/www/
+cd /var/www/html/
 sudo git clone https://github.com/laravel/laravel.git laravel
 sudo cd laravel
 sudo composer install
-sudo chown -R www-data:www-data /var/www/laravel
+sudo chown -R www-data:www-data /var/www/html/laravel
 sudo cp .env.example .env
 sudo php artisan key:generate
 ```
 
-sudo touch /var/www/laravel/database/database.sqlite
+sudo touch /var/www/html/laravel/database/database.sqlite
 
 Edit `.env` and set DB config:
 
 ```env
 su vi .env
-DB_CONNECTION=sqlite
-DB_DATABASE=/var/www/laravel/database/database.sqlite
-#DB_USERNAME=laravel_user
-#DB_PASSWORD=StrongPassword2!
+DB_CONNECTION=mysql
+#DB_DATABASE=/var/www/laravel/database/database.sqlite
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=StrongPassword2!
 ```
 
 Permissions:
 
 ```bash
-sudo chown -R www-data:www-data /var/www/laravel
-sudo chmod -R 755 /var/www/laravel/storage
+sudo chown -R www-data:www-data /var/www/html/laravel
+sudo chmod -R 755 /var/www/html/laravel/storage
 ```
 
 ---
@@ -135,45 +138,13 @@ sudo chmod -R 755 /var/www/laravel/storage
 Edit default config:
 
 ```bash
-sudo vi /etc/nginx/sites-available/default
+sudo vi /etc/nginx/conf.d/default.conf
 ```
 
 Replace content:
 
 ```nginx
-server {
-    listen 80;
-    server_name _;
-
-    root /var/www;
-    index index.php index.html index.htm;
-
-    location /wordpress {
-        alias /var/www/wordpress-site;
-        index index.php;
-        try_files $uri $uri/ /index.php?$args;
-
-        location ~ \.php$ {
-            include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:/run/php/php-fpm.sock;
-        }
-    }
-
-    location /laravel {
-        alias /var/www/laravel-app/public;
-        index index.php;
-        try_files $uri $uri/ /index.php?$query_string;
-
-        location ~ \.php$ {
-            include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:/run/php/php-fpm.sock;
-        }
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-}
+copy from git /etc/ngnx/conf.d/default.conf
 ```
 
 Restart Nginx:
@@ -206,9 +177,9 @@ sudo systemctl reload nginx
 ## 📂 Directory Structure
 
 ```
-/var/www/
-├── laravel-app/        → Laravel project
-└── wordpress-site/     → WordPress site
+/var/www/html
+├── laravel/        → Laravel project
+└── wordpress/     → WordPress site
 ```
 
 ---
